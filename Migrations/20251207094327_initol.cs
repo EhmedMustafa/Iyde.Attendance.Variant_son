@@ -28,20 +28,6 @@ namespace Iyde.Attendance.Variant3.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Employees",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PersonalQr = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Employees", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Stores",
                 columns: table => new
                 {
@@ -71,6 +57,32 @@ namespace Iyde.Attendance.Variant3.Migrations
                 {
                     table.PrimaryKey("PK_WorkDays", x => x.Id);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "Employees",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PersonalQr = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StoreId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Employees", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Employees_Stores_StoreId",
+                        column: x => x.StoreId,
+                        principalTable: "Stores",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Employees_StoreId",
+                table: "Employees",
+                column: "StoreId");
         }
 
         /// <inheritdoc />
@@ -83,10 +95,10 @@ namespace Iyde.Attendance.Variant3.Migrations
                 name: "Employees");
 
             migrationBuilder.DropTable(
-                name: "Stores");
+                name: "WorkDays");
 
             migrationBuilder.DropTable(
-                name: "WorkDays");
+                name: "Stores");
         }
     }
 }

@@ -48,7 +48,9 @@ public class AnalyticsService : Interfaces.IAnalyticsService
                 EmployeeName = emp?.FullName ?? wd.EmployeeId.ToString(),
                 StoreName = store?.Name ?? wd.StoreId.ToString(),
                 Date = date,
-
+                PlannedRange = wd.IsDayOff
+                    ? "İstirahət"
+                    : $"{wd.PlannedStart:HH\\:mm} - {wd.PlannedEnd:HH\\:mm}",
                 PlannedStart = wd.PlannedStart,
                 PlannedEnd = wd.PlannedEnd,
 
@@ -57,11 +59,11 @@ public class AnalyticsService : Interfaces.IAnalyticsService
             };
             if (wd.IsDayOff)
             {
-                item.Status = "DayOff";
+                item.Status = "İstirahət";
             }
             else if (att is null)
             {
-                item.Status = "Absent";
+                item.Status = "Gəlməyib";
             }
             else
             {
@@ -84,13 +86,13 @@ public class AnalyticsService : Interfaces.IAnalyticsService
                     item.MinutesEarlyLeave = (int)(plannedEnd - att.CheckOut.Value).TotalMinutes;
 
                 if (item.MinutesLate > 0 && item.MinutesEarlyLeave > 0)
-                    item.Status = "Late+EarlyLeave";
+                    item.Status = "Gec gəlib,Tez çıxıb";
                 else if (item.MinutesLate > 0)
-                    item.Status = "Late";
+                    item.Status = "Gec gəlib";
                 else if (item.MinutesEarlyLeave > 0)
-                    item.Status = "EarlyLeave";
+                    item.Status = "Tez çıxıb";
                 else
-                    item.Status = "OnTime";
+                    item.Status = "Tam";
             }
 
             report.Items.Add(item);

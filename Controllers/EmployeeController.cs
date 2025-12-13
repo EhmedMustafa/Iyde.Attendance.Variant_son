@@ -13,7 +13,7 @@ public class EmployeeController : ControllerBase
 
     [HttpPost]
     public async Task<IActionResult> Create(CreateEmployeeDto dto)
-        => Ok(await _employeeService.CreateAsync(dto.FullName));
+        => Ok(await _employeeService.CreateAsync(dto.FullName,dto.StoreId));
 
   
     

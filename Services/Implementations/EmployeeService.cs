@@ -9,11 +9,12 @@ public class EmployeeService : Interfaces.IEmployeeService
     private readonly IEmployeeRepository _employeeRepository;
     public EmployeeService(IEmployeeRepository employeeRepository) => _employeeRepository = employeeRepository;
 
-    public async Task<ResultDto> CreateAsync(string fullName)
+    public async Task<ResultDto> CreateAsync(string fullName,int StoreId)
     {
         var emp = new Employee
         {
             FullName = fullName,
+            StoreId= StoreId,
             PersonalQr = Guid.NewGuid().ToString()
         };
         await _employeeRepository.AddAsync(emp);

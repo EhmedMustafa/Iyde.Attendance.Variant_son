@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Iyde.Attendance.Variant3.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251204062739_initol")]
+    [Migration("20251207094327_initol")]
     partial class initol
     {
         /// <inheritdoc />
@@ -66,7 +66,12 @@ namespace Iyde.Attendance.Variant3.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("StoreId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("StoreId");
 
                     b.ToTable("Employees");
                 });
@@ -117,6 +122,17 @@ namespace Iyde.Attendance.Variant3.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("WorkDays");
+                });
+
+            modelBuilder.Entity("Iyde.Attendance.Variant3.Models.Employee", b =>
+                {
+                    b.HasOne("Iyde.Attendance.Variant3.Models.Store", "Store")
+                        .WithMany()
+                        .HasForeignKey("StoreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Store");
                 });
 #pragma warning restore 612, 618
         }
