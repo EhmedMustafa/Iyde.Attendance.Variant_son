@@ -6,6 +6,8 @@ public interface IEmployeeRepository
 {
     Task<Employee?> GetByIdAsync(int id);
     Task AddAsync(Employee employee);
+    Task<Employee> GetWithStoreAsync(int id);
 
+    Task AutoClocedPreviusOpenAsync(int Id);
     Task SaveAsync();
 }

@@ -10,15 +10,14 @@ public class AttendanceRepository : IAttendanceRepository
     private readonly ApplicationDbContext _context;
     public AttendanceRepository(ApplicationDbContext context) => _context = context;
 
-    public Task<Attendances?> GetOpenForTodayAsync(int employeeId)
+    public Task<Attendances?> GetOpenForTodayAsync(int employeeId,DateOnly date)
     {
         var today = DateOnly.FromDateTime(DateTime.Today);
 
         return _context.Attendances
             .Where(a => a.EmployeeId == employeeId &&
-                        DateOnly.FromDateTime(a.CheckIn) == today &&
-                        a.CheckOut == null)
-            .OrderByDescending(a => a.CheckIn)
+                        DateOnly.FromDateTime(a.CheckIn) == date)
+           
             .FirstOrDefaultAsync();
     }
 

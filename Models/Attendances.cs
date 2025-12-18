@@ -7,4 +7,6 @@ public class Attendances
     public int StoreId { get; set; }
     public DateTime CheckIn { get; set; }
     public DateTime? CheckOut { get; set; }
+
+    public bool IsAutoCloced { get; set; }
 }

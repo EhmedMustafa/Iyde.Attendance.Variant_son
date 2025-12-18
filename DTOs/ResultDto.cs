@@ -5,6 +5,11 @@ public class ResultDto
     public bool Success { get; set; }
     public string Message { get; set; } = string.Empty;
 
+    public DateTime? CheckInTime { get; set; }
+
+    public DateTime? CheckOutTime { get; set; }
+
     public static ResultDto Ok(string msg) => new() { Success = true, Message = msg };
+
     public static ResultDto Fail(string msg) => new() { Success = false, Message = msg };
 }

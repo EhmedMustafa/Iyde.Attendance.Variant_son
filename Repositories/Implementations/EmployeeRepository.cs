@@ -17,4 +17,29 @@ public class EmployeeRepository : IEmployeeRepository
         => await _context.Employees.AddAsync(employee);
 
     public Task SaveAsync() => _context.SaveChangesAsync();
+
+    public Task<Employee> GetWithStoreAsync(int id)
+    
+        => _context.Employees
+            .Include(e => e.Store)
+            .FirstAsync(e => e.Id == id);
+
+    public async Task AutoClocedPreviusOpenAsync(int Id)
+    {
+        var yestarday = DateTime.Today.AddDays(-1);
+
+        var open= await _context.Attendances
+            .Where(a=>a.EmployeeId==Id&&
+                   a.CheckOut==null&&
+                   a.CheckIn.Date<=yestarday.Date).FirstOrDefaultAsync();
+
+        if (open != null) 
+        {
+            open.CheckOut= open.CheckIn.Date.AddDays(1).AddSeconds(-1);
+            open.IsAutoCloced = true;
+            await _context.SaveChangesAsync();
+        }
+
+
+    }
 }
