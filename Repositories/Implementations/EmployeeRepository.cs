@@ -37,9 +37,8 @@ public class EmployeeRepository : IEmployeeRepository
         {
             open.CheckOut= open.CheckIn.Date.AddDays(1).AddSeconds(-1);
             open.IsAutoCloced = true;
-            await _context.SaveChangesAsync();
         }
-
+        await _context.SaveChangesAsync();
 
     }
 }

@@ -53,9 +53,10 @@ public class AnalyticsService : Interfaces.IAnalyticsService
                     : $"{wd.PlannedStart:HH\\:mm} - {wd.PlannedEnd:HH\\:mm}",
                 PlannedStart = wd.PlannedStart,
                 PlannedEnd = wd.PlannedEnd,
-
+               
                 CheckIn = att?.CheckIn,
-                CheckOut = att?.CheckOut
+                CheckOut = att?.CheckOut,
+                IsAutoCloced = att?.IsAutoCloced ?? false
             };
             if (wd.IsDayOff)
             {

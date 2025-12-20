@@ -20,6 +20,10 @@ public class EmployeeDayStatusDto
     public int MinutesLate { get; set; }
     public int MinutesEarlyLeave { get; set; }
     public int WorkedMinutes { get; set; }
+
+    public bool IsAutoCloced { get; set; }
+
+    
 }
 
 public class DailyReportDto

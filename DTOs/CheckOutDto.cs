@@ -4,5 +4,5 @@ public class CheckOutDto
 {
     public int EmployeeId { get; set; }
 
-    public bool IsAutoClosed { get; set; }
+    public bool IsAutoCloced { get; set; }
 }
