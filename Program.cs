@@ -40,12 +40,15 @@ builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IStoreRepository, StoreRepository>();
 builder.Services.AddScoped<IAttendanceRepository, AttendanceRepository>();
 builder.Services.AddScoped<IWorkDayRepository, WorkDayRepository>();
+builder.Services.AddScoped<IAttendanceEarlyAttemptRepository, AttendanceEarlyAttemptRepository>();
+
 
 // services
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IStoreService, StoreService>();
 builder.Services.AddScoped<IAttendanceService, AttendanceService>();
 builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
+builder.Services.AddScoped<IAttendanceEarlyAttemptService,AttendanceEarlyAttemptService>();
 
 var app = builder.Build();
 

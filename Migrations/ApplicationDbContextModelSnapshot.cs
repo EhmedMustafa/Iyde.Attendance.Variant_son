@@ -22,6 +22,40 @@ namespace Iyde.Attendance.Variant3.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Iyde.Attendance.Variant3.Models.AttendanceEarlyAttempt", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("AttemptTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Source")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StoreId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.HasIndex("StoreId");
+
+                    b.ToTable("AttendanceEarlyAttempts");
+                });
+
             modelBuilder.Entity("Iyde.Attendance.Variant3.Models.Attendances", b =>
                 {
                     b.Property<int>("Id")
@@ -122,6 +156,25 @@ namespace Iyde.Attendance.Variant3.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("WorkDays");
+                });
+
+            modelBuilder.Entity("Iyde.Attendance.Variant3.Models.AttendanceEarlyAttempt", b =>
+                {
+                    b.HasOne("Iyde.Attendance.Variant3.Models.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Iyde.Attendance.Variant3.Models.Store", "Store")
+                        .WithMany()
+                        .HasForeignKey("StoreId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("Store");
                 });
 
             modelBuilder.Entity("Iyde.Attendance.Variant3.Models.Employee", b =>

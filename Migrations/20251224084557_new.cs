@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Iyde.Attendance.Variant3.Migrations
 {
     /// <inheritdoc />
-    public partial class initol : Migration
+    public partial class @new : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -20,7 +20,8 @@ namespace Iyde.Attendance.Variant3.Migrations
                     EmployeeId = table.Column<int>(type: "int", nullable: false),
                     StoreId = table.Column<int>(type: "int", nullable: false),
                     CheckIn = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CheckOut = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    CheckOut = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsAutoCloced = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -79,6 +80,45 @@ namespace Iyde.Attendance.Variant3.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "AttendanceEarlyAttempts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    EmployeeId = table.Column<int>(type: "int", nullable: false),
+                    StoreId = table.Column<int>(type: "int", nullable: false),
+                    AttemptTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Reason = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Source = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AttendanceEarlyAttempts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AttendanceEarlyAttempts_Employees_EmployeeId",
+                        column: x => x.EmployeeId,
+                        principalTable: "Employees",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_AttendanceEarlyAttempts_Stores_StoreId",
+                        column: x => x.StoreId,
+                        principalTable: "Stores",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AttendanceEarlyAttempts_EmployeeId",
+                table: "AttendanceEarlyAttempts",
+                column: "EmployeeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AttendanceEarlyAttempts_StoreId",
+                table: "AttendanceEarlyAttempts",
+                column: "StoreId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_Employees_StoreId",
                 table: "Employees",
@@ -89,13 +129,16 @@ namespace Iyde.Attendance.Variant3.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "AttendanceEarlyAttempts");
+
+            migrationBuilder.DropTable(
                 name: "Attendances");
 
             migrationBuilder.DropTable(
-                name: "Employees");
+                name: "WorkDays");
 
             migrationBuilder.DropTable(
-                name: "WorkDays");
+                name: "Employees");
 
             migrationBuilder.DropTable(
                 name: "Stores");

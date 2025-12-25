@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Iyde.Attendance.Variant3.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251207094327_initol")]
-    partial class initol
+    [Migration("20251224084557_new")]
+    partial class @new
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,40 @@ namespace Iyde.Attendance.Variant3.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Iyde.Attendance.Variant3.Models.AttendanceEarlyAttempt", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("AttemptTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Source")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StoreId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.HasIndex("StoreId");
+
+                    b.ToTable("AttendanceEarlyAttempts");
+                });
 
             modelBuilder.Entity("Iyde.Attendance.Variant3.Models.Attendances", b =>
                 {
@@ -41,6 +75,9 @@ namespace Iyde.Attendance.Variant3.Migrations
 
                     b.Property<int>("EmployeeId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsAutoCloced")
+                        .HasColumnType("bit");
 
                     b.Property<int>("StoreId")
                         .HasColumnType("int");
@@ -122,6 +159,25 @@ namespace Iyde.Attendance.Variant3.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("WorkDays");
+                });
+
+            modelBuilder.Entity("Iyde.Attendance.Variant3.Models.AttendanceEarlyAttempt", b =>
+                {
+                    b.HasOne("Iyde.Attendance.Variant3.Models.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Iyde.Attendance.Variant3.Models.Store", "Store")
+                        .WithMany()
+                        .HasForeignKey("StoreId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("Store");
                 });
 
             modelBuilder.Entity("Iyde.Attendance.Variant3.Models.Employee", b =>

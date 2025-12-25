@@ -9,6 +9,10 @@ public class ResultDto
 
     public DateTime? CheckOutTime { get; set; }
 
+    public bool WasAutoClosed { get; set; }
+
+    public DateTime? AutoClosedAt { get; set; }
+
     public static ResultDto Ok(string msg) => new() { Success = true, Message = msg };
 
     public static ResultDto Fail(string msg) => new() { Success = false, Message = msg };

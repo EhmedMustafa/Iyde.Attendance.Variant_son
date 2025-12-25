@@ -9,22 +9,61 @@ public class AttendanceService : IAttendanceService
 {
     private readonly IAttendanceRepository _attendanceRepository;
     private readonly IEmployeeRepository _employeeRepository;
+    private readonly IWorkDayRepository _workDayRepository;
+    private readonly IAttendanceEarlyAttemptRepository _attendanceEarly;
+
 
     //public AttendanceService(IAttendanceRepository attendanceRepository)
     //{
     //    _attendanceRepository = attendanceRepository;
     //}
 
-    public AttendanceService(IAttendanceRepository attendanceRepository, IEmployeeRepository employeeRepository)
+    public AttendanceService(IAttendanceRepository attendanceRepository, IEmployeeRepository employeeRepository, IWorkDayRepository workDayRepository,IAttendanceEarlyAttemptRepository attendanceEarly)
     {
         _employeeRepository = employeeRepository;
         _attendanceRepository = attendanceRepository;
+        _workDayRepository = workDayRepository;
+        _attendanceEarly = attendanceEarly;
+
     }
 
     public async Task<ResultDto> CheckInAsync(int employeeId, int storeId)
     {
+        var now = DateTime.Now.TimeOfDay;
+        var allowedStart = new TimeSpan(14, 30 ,0); // 8:00 AM
+
+        if (now < allowedStart)
+        {
+
+            var earlyAttempt = new AttendanceEarlyAttempt
+            {
+                EmployeeId = employeeId,
+                StoreId = storeId,
+                AttemptTime = DateTime.Now,
+                Reason = "Erkən giriş cəhdi",
+                Source = "Bot"
+            };
+
+            await _attendanceEarly.AddAsync(earlyAttempt);
+            await _attendanceEarly.SaveAsync();
+
+            return ResultDto.Fail("❌ Giriş yalnız saat 08:00-dan sonra mümkündür.");
+        }
+
+
+
+
+        var daywork = await _workDayRepository.GetByEmployeeAndDateAsync(employeeId, DateOnly.FromDateTime(DateTime.Now));
+
+        if (daywork == null)
+        {
+            return ResultDto.Fail("❌ Bu gün üçün iş günü təyin edilməyib.");
+        }
+
 
         await _employeeRepository.AutoClocedPreviusOpenAsync(employeeId);
+
+
 
         var emp= await _employeeRepository.GetByIdAsync(employeeId);
         if (emp == null)
@@ -48,8 +87,7 @@ public class AttendanceService : IAttendanceService
             {
                 Success = false,
                 Message = "❌ Siz bu gün artıq giriş etmisiniz.",
-                CheckInTime = open.CheckIn
-
+                CheckInTime = open.CheckIn,
             };
         }
             //return new ResultDto.Fail("Bu gün üçün aktiv giriş artıq mövcuddur.");
@@ -67,6 +105,7 @@ public class AttendanceService : IAttendanceService
 
         return new ResultDto
         {
+            WasAutoClosed = att.IsAutoCloced,
             Success = true,
             Message = "✅ Giriş qeydə alındı.",
             CheckInTime = att.CheckIn
