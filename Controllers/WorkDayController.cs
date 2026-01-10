@@ -28,4 +28,26 @@ public class WorkDayController : ControllerBase
         await _workDayRepository.SaveAsync();
         return Ok();
     }
+
+
+
+    [HttpPut("update-workday")]
+    public async Task<IActionResult> Update( [FromBody] CreateWorkDayDto dto)
+    {
+
+        //var currentdate = DateOnly.FromDateTime(DateTime.Now);
+        var existingWorkDay = await _workDayRepository.GetByEmployeeAndDateAsync(dto.EmployeeId, dto.Date);
+        if (existingWorkDay == null)
+        {
+            return NotFound("Work day not found.");
+        }
+
+
+        existingWorkDay.StoreId = dto.StoreId;
+        existingWorkDay.PlannedStart = dto.PlannedStart;
+        existingWorkDay.PlannedEnd = dto.PlannedEnd;
+        existingWorkDay.IsDayOff = dto.IsDayOff;
+        await _workDayRepository.SaveAsync();
+        return Ok();
+    }
 }

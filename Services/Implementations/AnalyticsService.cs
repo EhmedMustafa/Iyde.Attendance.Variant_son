@@ -68,8 +68,8 @@ public class AnalyticsService : Interfaces.IAnalyticsService
             }
             else
             {
-                var plannedStart = date.ToDateTime(wd.PlannedStart);
-                var plannedEnd = date.ToDateTime(wd.PlannedEnd);
+                var plannedStart = wd.PlannedStart.HasValue ? date.ToDateTime(wd.PlannedStart.Value) : DateTime.MinValue;
+                var plannedEnd = wd.PlannedEnd.HasValue ? date.ToDateTime(wd.PlannedEnd.Value) : DateTime.MinValue;
                 var end = att.CheckOut ?? att.CheckIn;
                 item.WorkedMinutes = (int)(end - att.CheckIn).TotalMinutes;
 

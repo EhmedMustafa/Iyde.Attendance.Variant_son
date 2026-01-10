@@ -30,7 +30,7 @@ public class AttendanceService : IAttendanceService
     public async Task<ResultDto> CheckInAsync(int employeeId, int storeId)
     {
         var now = DateTime.Now.TimeOfDay;
-        var allowedStart = new TimeSpan(14, 30 ,0); // 8:00 AM
+        var allowedStart = new TimeSpan(7, 0 ,0); // 8:00 AM
 
         if (now < allowedStart)
         {
@@ -47,7 +47,7 @@ public class AttendanceService : IAttendanceService
             await _attendanceEarly.AddAsync(earlyAttempt);
             await _attendanceEarly.SaveAsync();
 
-            return ResultDto.Fail("❌ Giriş yalnız saat 08:00-dan sonra mümkündür.");
+            return ResultDto.Fail("❌ Giriş yalnız saat 07:00-dan sonra mümkündür.");
         }
 
 
@@ -58,6 +58,11 @@ public class AttendanceService : IAttendanceService
         if (daywork == null)
         {
             return ResultDto.Fail("❌ Bu gün üçün iş günü təyin edilməyib.");
+        }
+
+        if (daywork.IsDayOff)
+        {
+            return ResultDto.Fail("❌ Bu gün sizin istirahət gününüzdür.");
         }
 
 
