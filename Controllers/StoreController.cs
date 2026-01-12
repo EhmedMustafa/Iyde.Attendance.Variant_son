@@ -14,4 +14,9 @@ public class StoreController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create(CreateStoreDto dto)
         => Ok(await _storeService.CreateAsync(dto.Name));
+
+
+    [HttpGet("get-all-stores")]
+    public async Task<IActionResult> GetAll()
+        => Ok(await _storeService.GetAllAsync());
 }

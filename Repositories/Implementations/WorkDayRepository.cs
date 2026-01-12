@@ -22,4 +22,13 @@ public class WorkDayRepository : IWorkDayRepository
         => await _context.WorkDays.AddAsync(workDay);
 
     public Task SaveAsync() => _context.SaveChangesAsync();
+
+    public Task<List<WorkDay>> GetByEmployeeAndMonthAsync(int employeeId, int year, int month)
+    {
+        return _context.WorkDays
+            .Where(w => w.EmployeeId == employeeId &&
+                        w.Date.Year == year &&
+                        w.Date.Month == month)
+            .ToListAsync();
+    }
 }

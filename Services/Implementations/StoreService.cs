@@ -17,4 +17,16 @@ public class StoreService : IStoreService
         await _storeRepository.SaveAsync();
         return ResultDto.Ok("Store created");
     }
+
+    public Task<List<GetAllStoreDto>> GetAllAsync()
+    {
+        return _storeRepository.GetAllAsync()
+            .ContinueWith(t => t.Result
+                .Select(s => new GetAllStoreDto
+                {
+                    Id = s.Id,
+                    StoreName = s.Name
+                })
+                .ToList());
+    }
 }

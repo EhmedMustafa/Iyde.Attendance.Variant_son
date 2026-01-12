@@ -1,6 +1,7 @@
 using Iyde.Attendance.Variant3.DTOs;
 using Iyde.Attendance.Variant3.Models;
 using Iyde.Attendance.Variant3.Repositories.Interfaces;
+using Iyde.Attendance.Variant3.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Iyde.Attendance.Variant3.Controllers;
@@ -10,7 +11,14 @@ namespace Iyde.Attendance.Variant3.Controllers;
 public class WorkDayController : ControllerBase
 {
     private readonly IWorkDayRepository _workDayRepository;
-    public WorkDayController(IWorkDayRepository workDayRepository) => _workDayRepository = workDayRepository;
+    private readonly IWorkDayService _workDayService;
+   // public WorkDayController(IWorkDayRepository workDayRepository) => _workDayRepository = workDayRepository;
+
+    public WorkDayController(IWorkDayRepository workDayRepository, IWorkDayService workDayService)
+    {
+        _workDayService = workDayService;
+        _workDayRepository = workDayRepository;
+    }
 
     [HttpPost]
     public async Task<IActionResult> Create(CreateWorkDayDto dto)
@@ -49,5 +57,14 @@ public class WorkDayController : ControllerBase
         existingWorkDay.IsDayOff = dto.IsDayOff;
         await _workDayRepository.SaveAsync();
         return Ok();
+    }
+
+    [HttpGet("GetMonthlySummary")]
+    public async Task<IActionResult> GetMonthlySummary(int year, int month)
+    {
+        var summaries = await _workDayService.GetMonthlySummary(year, month);
+        //if (summaries == null)
+        //    return NotFound("No summaries found for the specified month and year.");
+        return Ok(summaries);
     }
 }

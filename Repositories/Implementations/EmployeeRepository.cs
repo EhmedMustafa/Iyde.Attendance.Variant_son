@@ -41,4 +41,9 @@ public class EmployeeRepository : IEmployeeRepository
         await _context.SaveChangesAsync();
 
     }
+
+    public Task<List<Employee>> GetAllAsync()
+    {
+        return _context.Employees.ToListAsync();
+    }
 }
