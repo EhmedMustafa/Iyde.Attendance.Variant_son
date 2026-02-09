@@ -31,4 +31,10 @@ public class WorkDayRepository : IWorkDayRepository
                         w.Date.Month == month)
             .ToListAsync();
     }
+
+    public async Task<List<WorkDay>> GetByDateRangeAsync(DateOnly startDate, DateOnly endDate)
+    {
+        return await _context.WorkDays
+            .Where(w=>w.Date>= startDate&&w.Date<=endDate).ToListAsync();
+    }
 }

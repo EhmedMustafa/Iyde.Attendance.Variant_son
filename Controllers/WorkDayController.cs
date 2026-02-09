@@ -63,6 +63,7 @@ public class WorkDayController : ControllerBase
     public async Task<IActionResult> GetMonthlySummary(int year, int month)
     {
         var summaries = await _workDayService.GetMonthlySummary(year, month);
+
         //if (summaries == null)
         //    return NotFound("No summaries found for the specified month and year.");
         return Ok(summaries);

@@ -44,6 +44,8 @@ public class EmployeeRepository : IEmployeeRepository
 
     public Task<List<Employee>> GetAllAsync()
     {
-        return _context.Employees.ToListAsync();
+        return _context.Employees
+            .Include(e => e.Store)
+            .ToListAsync();
     }
 }

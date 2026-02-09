@@ -34,4 +34,11 @@ public class AttendanceRepository : IAttendanceRepository
         => await _context.Attendances.AddAsync(attendance);
 
     public Task SaveAsync() => _context.SaveChangesAsync();
+
+    public async Task<List<Attendances>> GetByDateRangeAsync(DateOnly startDate, DateOnly endDate)
+    {
+       return await _context.Attendances
+            .Where(a => DateOnly.FromDateTime(a.CheckIn) >= startDate &&
+                      DateOnly.FromDateTime(a.CheckIn) <= endDate).ToListAsync();
+    }
 }

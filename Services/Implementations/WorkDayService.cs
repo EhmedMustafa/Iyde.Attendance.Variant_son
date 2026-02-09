@@ -1,4 +1,5 @@
 ﻿using Iyde.Attendance.Variant3.DTOs;
+using Iyde.Attendance.Variant3.Models;
 using Iyde.Attendance.Variant3.Repositories.Interfaces;
 using Iyde.Attendance.Variant3.Services.Interfaces;
 
@@ -24,22 +25,57 @@ namespace Iyde.Attendance.Variant3.Services.Implementations
         {
             var result= new List<MonthlyEmployeeSummaryDto>();
 
+            var today= DateOnly.FromDateTime(DateTime.Now);
+
+            var startDate = new DateOnly(year, month, 1);
+            var endDate = startDate.AddMonths(1).AddDays(-1);
+
+            if (endDate > today)
+            {
+                endDate = today;
+            }
+
             var employees= await _employeeRepository.GetAllAsync();
-            
+            var allWorkDays = await _workDayRepository.GetByDateRangeAsync(startDate, endDate);
+            var allAttendances = await _attendanceRepository.GetByDateRangeAsync(startDate, endDate);
+
+            var workDaysDict = allWorkDays
+                .GroupBy(wd => wd.EmployeeId)
+                .ToDictionary(g => g.Key, g => g.ToList());
+
+            var attendancesDict = allAttendances
+                .GroupBy(at => at.EmployeeId)
+                .ToDictionary(g => g.Key, g => g.ToList());
 
 
             foreach (var emp in employees) 
             {
-                var stores = await _storeRepository.GetAllAsync();
+                //var stores = await _storeRepository.GetAllAsync();
+
                 int absent= 0;
                 int late = 0;
                 int early = 0;
 
-                var workDays = await _workDayRepository.GetByEmployeeAndMonthAsync(emp.Id,year, month);
 
-                foreach (var wd in workDays)
+                if (!workDaysDict.TryGetValue(emp.Id, out var empWorksDay)) 
                 {
-                    var att =await _attendanceRepository.GetByEmployeeAndDateAsync(emp.Id, wd.Date);
+                    empWorksDay = new List<WorkDay>();
+                }
+
+                if (!attendancesDict.TryGetValue(emp.Id, out var empAttandanse))
+                {
+                    empAttandanse = new List<Attendances>();
+                }
+
+
+               // var workDays = await _workDayRepository.GetByEmployeeAndMonthAsync(emp.Id,year, month);
+
+                foreach (var wd in empWorksDay)
+                {
+                   // var att =await _attendanceRepository.GetByEmployeeAndDateAsync(emp.Id, wd.Date);
+
+                    var att= empAttandanse
+                        .FirstOrDefault(a => DateOnly.FromDateTime(a.CheckIn) == wd.Date);
 
                     if (!wd.IsDayOff && att == null)
                     {
@@ -49,8 +85,10 @@ namespace Iyde.Attendance.Variant3.Services.Implementations
 
                     if(att==null) continue;
 
-                    var plstart = wd.Date.ToDateTime((TimeOnly)wd.PlannedStart);
-                    var plend = wd.Date.ToDateTime((TimeOnly)wd.PlannedEnd);
+                    if(wd.PlannedStart==null||wd.PlannedEnd==null) continue;
+
+                    var plstart = wd.Date.ToDateTime(wd.PlannedStart.Value);
+                    var plend = wd.Date.ToDateTime(wd.PlannedEnd.Value);
 
                     if (att.CheckIn > plstart)
                     {
