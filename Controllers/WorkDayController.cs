@@ -1,4 +1,4 @@
-using Iyde.Attendance.Variant3.DTOs;
+﻿using Iyde.Attendance.Variant3.DTOs;
 using Iyde.Attendance.Variant3.Models;
 using Iyde.Attendance.Variant3.Repositories.Interfaces;
 using Iyde.Attendance.Variant3.Services.Interfaces;
@@ -40,23 +40,33 @@ public class WorkDayController : ControllerBase
 
 
     [HttpPut("update-workday")]
-    public async Task<IActionResult> Update( [FromBody] CreateWorkDayDto dto)
+    public async Task<IActionResult> Update( [FromBody] UpdateWorkDayDto dto)
     {
 
-        //var currentdate = DateOnly.FromDateTime(DateTime.Now);
-        var existingWorkDay = await _workDayRepository.GetByEmployeeAndDateAsync(dto.EmployeeId, dto.Date);
-        if (existingWorkDay == null)
+
+        //var existingWorkDay = await _workDayRepository.GetByEmployeeAndDateAsync(dto.EmployeeId, dto.Date);
+
+        var ISupdated = await _workDayService.UpdateWorkDayAsync(dto);
+
+        if (!ISupdated)
         {
-            return NotFound("Work day not found.");
+            return NotFound("İş qrafiki tapılmadı.");
         }
 
+        return Ok(new { message = "İş qrafiki uğurla yeniləndi!" });
 
-        existingWorkDay.StoreId = dto.StoreId;
-        existingWorkDay.PlannedStart = dto.PlannedStart;
-        existingWorkDay.PlannedEnd = dto.PlannedEnd;
-        existingWorkDay.IsDayOff = dto.IsDayOff;
-        await _workDayRepository.SaveAsync();
-        return Ok();
+        //if (existingWorkDay == null)
+        //{
+        //    return NotFound("Work day not found.");
+        //}
+
+
+        //existingWorkDay.StoreId = dto.StoreId;
+        //existingWorkDay.PlannedStart = dto.PlannedStart;
+        //existingWorkDay.PlannedEnd = dto.PlannedEnd;
+        //existingWorkDay.IsDayOff = dto.IsDayOff;
+        //await _workDayRepository.SaveAsync();
+        //return Ok();
     }
 
     [HttpGet("GetMonthlySummary")]

@@ -15,6 +15,11 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<AttendanceEarlyAttempt> AttendanceEarlyAttempts => Set<AttendanceEarlyAttempt>();
 
+    public DbSet<AppUser> appUsers => Set<AppUser>();
+
+    
+    public DbSet<Company> Companies => Set<Company>();
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -9,4 +9,6 @@ public interface IStoreRepository
     Task<Store?> GetByIdAsync(int id);
     Task AddAsync(Store store);
     Task SaveAsync();
+
+    Task<List<Store>> GetStoresByCompanyIdAsync(int? companyId);
 }

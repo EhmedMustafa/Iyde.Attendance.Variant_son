@@ -41,6 +41,8 @@ builder.Services.AddScoped<IStoreRepository, StoreRepository>();
 builder.Services.AddScoped<IAttendanceRepository, AttendanceRepository>();
 builder.Services.AddScoped<IWorkDayRepository, WorkDayRepository>();
 builder.Services.AddScoped<IAttendanceEarlyAttemptRepository, AttendanceEarlyAttemptRepository>();
+builder.Services.AddScoped<IAuthRepository,AuthRepository>();
+builder.Services.AddScoped<ICompanyRepository,CompanyRepository>();
 
 
 
@@ -51,6 +53,8 @@ builder.Services.AddScoped<IAttendanceService, AttendanceService>();
 builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
 builder.Services.AddScoped<IAttendanceEarlyAttemptService,AttendanceEarlyAttemptService>();
 builder.Services.AddScoped<IWorkDayService, WorkDayService>();
+builder.Services.AddScoped<IAuthServise, AuthServise>();
+builder.Services.AddScoped<ICompanyService, CompanyService>();
 
 var app = builder.Build();
 

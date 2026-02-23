@@ -10,9 +10,9 @@ public class StoreService : IStoreService
     private readonly IStoreRepository _storeRepository;
     public StoreService(IStoreRepository storeRepository) => _storeRepository = storeRepository;
 
-    public async Task<ResultDto> CreateAsync(string name)
+    public async Task<ResultDto> CreateAsync(string name,int? id)
     {
-        var store = new Store { Name = name };
+        var store = new Store { Name = name};
         await _storeRepository.AddAsync(store);
         await _storeRepository.SaveAsync();
         return ResultDto.Ok("Store created");
@@ -25,8 +25,24 @@ public class StoreService : IStoreService
                 .Select(s => new GetAllStoreDto
                 {
                     Id = s.Id,
-                    StoreName = s.Name
+                    StoreName = s.Name,
+                    CompanyId = s.CompanyId
+
                 })
                 .ToList());
+    }
+
+    public async Task<List<GetAllStoreDto>> GetStoresByCompanyIdAsync(int? companyId)
+    {
+        var stores= await _storeRepository.GetStoresByCompanyIdAsync(companyId);
+        var storeList = stores.Select(s => new GetAllStoreDto
+        {
+            Id = s.Id,
+            CompanyId =s.CompanyId,
+            StoreName = s.Name,
+        }).ToList();
+
+        return storeList;
+
     }
 }

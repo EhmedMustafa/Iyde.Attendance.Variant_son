@@ -13,7 +13,7 @@ public class StoreController : ControllerBase
 
     [HttpPost]
     public async Task<IActionResult> Create(CreateStoreDto dto)
-        => Ok(await _storeService.CreateAsync(dto.Name));
+        => Ok(await _storeService.CreateAsync(dto.Name,dto.CompanyId));
 
 
     [HttpGet("get-all-stores")]

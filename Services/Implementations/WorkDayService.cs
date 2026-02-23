@@ -2,6 +2,8 @@
 using Iyde.Attendance.Variant3.Models;
 using Iyde.Attendance.Variant3.Repositories.Interfaces;
 using Iyde.Attendance.Variant3.Services.Interfaces;
+using Microsoft.AspNetCore.Http.HttpResults;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Iyde.Attendance.Variant3.Services.Implementations
 {
@@ -20,6 +22,8 @@ namespace Iyde.Attendance.Variant3.Services.Implementations
             _attendanceRepository = attendanceRepository;
             _storeRepository = storeRepository;
         }
+
+     
 
         public async Task<List<MonthlyEmployeeSummaryDto>> GetMonthlySummary(int year, int month)
         {
@@ -113,6 +117,30 @@ namespace Iyde.Attendance.Variant3.Services.Implementations
             }
 
             return result;
+        }
+
+        public async Task<bool> UpdateWorkDayAsync(UpdateWorkDayDto dto)
+        {
+            var existing = await _workDayRepository.GetByEmployeeAndDateAsync(dto.EmployeeId,dto.Date);
+
+            if (existing == null)
+            {
+                return false;
+            }
+
+            existing.StoreId = dto.StoreId;
+            existing.PlannedStart = dto.PlannedStart;
+            existing.PlannedEnd = dto.PlannedEnd;
+            existing.IsDayOff = dto.IsDayOff;
+
+            existing.UpdatedBy = dto.ModifiedByUser;
+            existing.UpdatedAt = DateTime.Now;
+
+            
+
+            await _workDayRepository.SaveAsync();
+
+            return true;
         }
     }
 }

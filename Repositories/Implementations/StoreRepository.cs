@@ -22,4 +22,11 @@ public class StoreRepository : IStoreRepository
     {
         return _context.Stores.ToListAsync();
     }
+
+    public async Task<List<Store>> GetStoresByCompanyIdAsync(int? companyId)
+    {
+        if (companyId == null) return _context.Stores.ToList();
+
+        return await  _context.Stores.Where(s => s.CompanyId == companyId).ToListAsync();
+    }
 }
